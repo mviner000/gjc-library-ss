@@ -1,25 +1,52 @@
-"use client";
+"use client"
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
 import PageContainer from "@/components/layout/page-container";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import BookTransactionsSkeletonLoader from "../card/LibraryCardDashboard/BookTransactionsSkeletonLoader";
-import dynamic from "next/dynamic";
+import InspirationalQuoteModal from "./InspirationalQuoteModal";
+
+// Dynamically import Lottie component with SSR disabled
+const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
 
 const BookTransactionsAccordion = dynamic(
   () => import("../card/LibraryCardDashboard/BookTransactionsAccordion"),
   {
     loading: () => <BookTransactionsSkeletonLoader />,
-    ssr: false, // Disable server-side rendering for this component
+    ssr: false,
   }
 );
 
+// Define the type for the Lottie animation data
+type LottieAnimationData = {
+  v: string;
+  meta: { g: string; a: string; k: string; d: string; tc: string };
+  fr: number;
+  ip: number;
+  op: number;
+  w: number;
+  h: number;
+  nm: string;
+  ddd: number;
+  assets: any[];
+  layers: any[];
+};
 
 export function DashReloader() {
-  const [countdown, setCountdown] = useState(900); // 15 minutes in seconds
+  const [countdown, setCountdown] = useState(900);
   const [selectedTab, setSelectedTab] = useState("pie-graph");
+  const [showConfetti, setShowConfetti] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [confettiData, setConfettiData] = useState<LottieAnimationData | null>(null);
 
   useEffect(() => {
+    setShowConfetti(true);
+    
+    // Load confetti data
+    import("./confetti.json").then((module: { default: LottieAnimationData }) => {
+      setConfettiData(module.default);
+    });
 
     const intervalId = setInterval(() => {
       setCountdown((prevCountdown) => {
@@ -30,7 +57,16 @@ export function DashReloader() {
       });
     }, 1000);
 
-    return () => clearInterval(intervalId);
+    // Hide confetti after 5 seconds and show modal
+    const confettiTimer = setTimeout(() => {
+      setShowConfetti(false);
+      setShowModal(true);
+    }, 3000);
+
+    return () => {
+      clearInterval(intervalId);
+      clearTimeout(confettiTimer);
+    };
   }, []);
 
   const handleTabChange = (value: string) => {
@@ -38,9 +74,13 @@ export function DashReloader() {
     localStorage.setItem("selectedVisitorTab", value);
   };
 
-
   return (
     <PageContainer scrollable={true}>
+      {showConfetti && confettiData && typeof window !== 'undefined' && (
+        <div style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "100%", zIndex: 9999, pointerEvents: "none" }}>
+          <Lottie animationData={confettiData} loop={true} />
+        </div>
+      )}
       <div>
         <p>Page will reload in {countdown} seconds.</p>
       </div>
@@ -57,8 +97,14 @@ export function DashReloader() {
               </div>
             </div>
           </TabsContent>
-         
         </Tabs>
+        {showModal && (
+          <InspirationalQuoteModal 
+            quote="Your time is limited, so don't waste it living someone else's life."
+            author="Steve Jobs"
+            buttonText="Let's do it"
+          />
+        )}
       </div>
     </PageContainer>
   );
