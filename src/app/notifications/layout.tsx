@@ -4,8 +4,8 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'GJC Library Admin',
-    description: 'Admin notifications for staffs'
+    title: 'GJC Library Researcher',
+    description: 'Researcher notifications for staffs'
 };
 
 export default function NotificationsLayout({

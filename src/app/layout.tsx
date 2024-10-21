@@ -12,21 +12,21 @@ import { archivo, libre_franklin, oswald } from "@/utils/fonts";
 import { NotificationsProvider } from "@/contexts/NotificationsContext";
 
 export const metadata: Metadata = {
-  title: "GJC Library: Admin",
-  description: "Manage and track student attendance and activity logs at the General De Jesus College Library.",
-  keywords: "GJC Library, student attendance, student logs, college library management, academic resources",
+  title: "GJC Library: Researcher",
+  description: "Access and manage research resources at the General De Jesus College Library.",
+  keywords: "GJC Library, research, academic resources, college library, scholarly articles",
   openGraph: {
-    title: "GJC Library: Admin",
-    description: "Monitor and record student attendance and activities at the General De Jesus College Library.",
-    url: "https://admin.gjclibrary.com",
+    title: "GJC Library: Researcher",
+    description: "Explore and utilize research materials at the General De Jesus College Library.",
+    url: "https://ss.gjclibrary.com",
     siteName: "General De Jesus College Library",
     locale: "en_US",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "GJC Library: Admin",
-    description: "Streamline student library usage reporting at the General De Jesus College Library.",
+    title: "GJC Library: Researcher",
+    description: "Enhance your research experience at the General De Jesus College Library.",
   },
   robots: {
     index: true,
@@ -49,7 +49,7 @@ export default function RootLayout({
       >
         <Suspense fallback={
           <>
-            {/* null muna dito for smooth fidgetspinner loading */}
+            {/* null for now to allow smooth fidgetspinner loading */}
           </>
         }>
           <AuthProvider>

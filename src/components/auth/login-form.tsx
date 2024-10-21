@@ -75,7 +75,7 @@ export const LoginForm = () => {
 
   return (
     <CardWrapper
-      headerTitle="Admin"
+      headerTitle="Team Researcher"
       headerLabel="This page is restricted"
       headerLabelColor="text-rose-400"
       backButtonLabel="Don't have an account?"

@@ -30,6 +30,15 @@ const AuthLayout = ({
       <div className=" flex items-center justify-center mt-5">
         {children}
       </div>
+      <div className="absolute top-[47rem]">
+        <div className="text-center xs:ml-2 xs:mt-4 md:ml-5 lg:ml-14 lg:mt-0 lg:rotate-1">
+        <img
+          src="/images/erg-snoos.webp"
+          alt="Description of the image"
+          className="xs:w-50 md:w-70 lg:w-7/12 h-auto object-cover"
+        />
+      </div>
+      </div>
     </div>
   )
 }
