@@ -116,7 +116,9 @@ const StudentCard: React.FC<StudentCardProps> = ({
       </div>
       <div className="w-[320px]">
         <AutoReloadWrapper>
+          <div className="mt-5">
           <BookTransactionByAccountId />
+          </div>
         </AutoReloadWrapper>
       </div>
     </div>

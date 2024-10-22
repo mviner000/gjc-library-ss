@@ -146,6 +146,7 @@ const UpdateBookRecordModal: React.FC<UpdateBookRecordModalProps> = ({
                   <SelectItem value="BORROWED">Borrow</SelectItem>
                   <SelectItem value="EXTENDED">Extend</SelectItem>
                   <SelectItem value="RETURNED">Returned</SelectItem>
+                  <SelectItem value="CLEARED">Cleared</SelectItem>
                 </SelectContent>
               </Select>
             </div>

@@ -119,7 +119,7 @@ const Column: React.FC<ColumnProps> = ({
                   .replace(/ADDITION/g, "")
                   .replace(/EXTENDED/g, "")
                   .replace(/RETURNED/g, "")
-                  .replace(/CLEARED/g, ""),
+                  .replace(/CLEARED/g, "cleared"),
                 17
               )}
               title={cellData.value}
