@@ -2,6 +2,12 @@ import { Icons } from "@/components/icons";
 
 export type UserId = number;
 
+export interface CourseData {
+  course: string;
+  count: number;
+  total_book_transactions: number;
+}
+
 export type StudentInfo = {
   // id: string;
   school_id: string;
@@ -14,6 +20,7 @@ export type StudentInfo = {
   year_level: string;
   position?: string | null;
   role: string;
+  cropped_avatar_url?: string | null;
 };
 
 export interface NotificationResponse {
