@@ -86,8 +86,8 @@ const UpdateBookRecordModal: React.FC<UpdateBookRecordModalProps> = ({
     );
     if (selected) {
       setSelectedTransaction(selected);
-      setStatus(selected.status);
-      // Don't update transactionDate here to keep user's selected date
+      // Remove this line to maintain the current status
+      // setStatus(selected.status);
     }
   };
 

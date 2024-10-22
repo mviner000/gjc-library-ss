@@ -61,7 +61,7 @@ const useGridData = () => {
       return !!(
         cellData &&
         typeof cellData.value === "string" &&
-        cellData.value.includes("ADDITION")
+        cellData.value.includes("cleared")
       );
     },
     []
@@ -100,8 +100,10 @@ const useGridData = () => {
         isExtendedCell(gridData[cellIndex])
           ? "text-blue-800 text-lg -mt-[18px] pb-[10px]"
           : "",
-        isAdditionCell(gridData[cellIndex]) ? "" : "",
-        isClearedCell(gridData[cellIndex]) ? "" : "",
+        isClearedCell(gridData[cellIndex])
+          ? "text-purple-800 text-lg -mt-[18px] pb-[10px]"
+          : "",
+        isAdditionCell(gridData[cellIndex]) ? "-mt-[12px] pb-[12px]" : "",
         isReturnedCell(gridData[cellIndex])
           ? "text-red-800 text-lg -mt-[18px] pb-[10px] line-through"
           : ""

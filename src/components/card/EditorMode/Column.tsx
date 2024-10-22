@@ -110,7 +110,7 @@ const Column: React.FC<ColumnProps> = ({
             )}
             <textarea
               className={cn(
-                "w-full bg-transparent text-center resize-none outline-none focus:outline-dashed focus:outline-green-500",
+                "w-full bg-transparent text-center resize-none outline-none focus:outline-dashed focus:outline-green-500 pb-1",
                 cellData.isLineThrough && "line-through"
               )}
               value={truncateText(
@@ -119,7 +119,7 @@ const Column: React.FC<ColumnProps> = ({
                   .replace(/ADDITION/g, "")
                   .replace(/EXTENDED/g, "")
                   .replace(/RETURNED/g, "")
-                  .replace(/CLEARED/g, "cleared"),
+                  .replace(/CLEARED/g, ""),
                 17
               )}
               title={cellData.value}

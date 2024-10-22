@@ -37,11 +37,13 @@ export const formatGridData = (record: BookRecord): string => {
   switch (record.record_type) {
     case "BORROWED":
     case "RETURNED":
-    case "CLEARED":
-    case "EXTENDED":
       return `${record.record_type}\n${formatDate(record.datetime)}`;
     case "ADDITION":
-      return `ADDITION${record.callno}\n#${record.accession_number}`;
+      return `\ncleared`;
+    case "EXTENDED":
+      return `${record.record_type}\n${formatDate(record.datetime)}`;
+    case "CLEARED":
+      return `${record.record_type}\n${formatDate(record.datetime)}`;
     default:
       return "";
   }
