@@ -95,17 +95,17 @@ const useGridData = () => {
         "custom-column-class",
         Math.floor(cellIndex / 9) % 2 === 0 ? "" : "",
         isBorrowedCell(gridData[cellIndex])
-          ? "text-green-800 text-lg -mt-[18px] pb-[10px]"
+          ? "text-green-800 text-lg -mt-[14px] pb-[10px]"
           : "",
         isExtendedCell(gridData[cellIndex])
-          ? "text-blue-800 text-lg -mt-[18px] pb-[10px]"
+          ? "text-blue-800 text-lg -mt-[14px] pb-[10px]"
           : "",
         isClearedCell(gridData[cellIndex])
-          ? "text-purple-800 text-lg -mt-[18px] pb-[10px]"
+          ? "text-purple-800 text-lg -mt-[14px] pb-[10px]"
           : "",
         isAdditionCell(gridData[cellIndex]) ? "-mt-[12px] pb-[12px]" : "",
         isReturnedCell(gridData[cellIndex])
-          ? "text-red-800 text-lg -mt-[18px] pb-[10px] line-through"
+          ? "text-red-800 text-lg -mt-[14px] pb-[10px] line-through"
           : ""
       );
     },
