@@ -1,16 +1,29 @@
 "use client";
-// header-client.tsx
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { HeaderActions } from "./header-actions";
-import NotifsToggle from "@/components/layout/Notifs/notifs-toggle";
+import { Menu } from "lucide-react";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
 interface HeaderClientProps {
-  user: any; // Replace 'any' with your actual user type
+  user: any;
 }
 
 export function HeaderClient({ user }: HeaderClientProps) {
   const pathname = usePathname();
+
+  const navigationLinks = [
+    { href: "/news", label: "News" },
+    { href: "/account", label: "Account" },
+    { href: "/contact", label: "Contact" },
+    { href: "/team", label: "Team" },
+  ];
 
   return (
     <div className="sticky top-0 z-[99] bg-neutral-800 py-6">
@@ -25,27 +38,55 @@ export function HeaderClient({ user }: HeaderClientProps) {
             />
           </Link>
         </div>
+
         <div className="flex justify-center items-center gap-5">
-          {/* <NotifsToggle /> */}
+          {/* Desktop Navigation */}
           {pathname !== "/login" && (
-            <>
-              <Link href="/news" className="font-bold text-lg text-white">
-                News
-              </Link>
-              <Link href="/account" className="font-bold text-lg text-white">
-                Account
-              </Link>
-              <Link href="/contact" className="font-bold text-lg text-white">
-                Contact
-              </Link>
-              <Link href="/team" className="font-bold text-lg text-white">
-                Team
-              </Link>
-            </>
+            <div className="hidden md:flex items-center gap-5">
+              {navigationLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="font-bold text-lg text-white hover:text-gray-300 transition-colors"
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
           )}
+
+          {/* Mobile Navigation */}
+          {pathname !== "/login" && (
+            <div className="md:hidden">
+              <Sheet>
+                <SheetTrigger className="p-2">
+                  <Menu className="h-6 w-6 text-white" />
+                </SheetTrigger>
+                <SheetContent side="right" className="bg-neutral-800">
+                  <SheetHeader>
+                    <SheetTitle className="text-white">Menu</SheetTitle>
+                  </SheetHeader>
+                  <div className="flex flex-col gap-4 mt-8">
+                    {navigationLinks.map((link) => (
+                      <Link
+                        key={link.href}
+                        href={link.href}
+                        className="font-bold text-lg text-white hover:text-gray-300 transition-colors"
+                      >
+                        {link.label}
+                      </Link>
+                    ))}
+                  </div>
+                </SheetContent>
+              </Sheet>
+            </div>
+          )}
+
           <HeaderActions user={user} />
         </div>
       </div>
     </div>
   );
 }
+
+export default HeaderClient;
