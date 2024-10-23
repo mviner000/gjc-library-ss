@@ -12,12 +12,15 @@ import { archivo, libre_franklin, oswald } from "@/utils/fonts";
 import { NotificationsProvider } from "@/contexts/NotificationsContext";
 
 export const metadata: Metadata = {
-  title: "GJC Library: Researcher",
-  description: "Access and manage research resources at the General De Jesus College Library.",
-  keywords: "GJC Library, research, academic resources, college library, scholarly articles",
+  title: "GJC Library: Team Researcher",
+  description:
+    "Access and manage research resources at the General De Jesus College Library.",
+  keywords:
+    "GJC Library, research, academic resources, college library, scholarly articles",
   openGraph: {
-    title: "GJC Library: Researcher",
-    description: "Explore and utilize research materials at the General De Jesus College Library.",
+    title: "GJC Library: Team Researcher",
+    description:
+      "Explore and utilize research materials at the General De Jesus College Library.",
     url: "https://ss.gjclibrary.com",
     siteName: "General De Jesus College Library",
     locale: "en_US",
@@ -25,8 +28,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "GJC Library: Researcher",
-    description: "Enhance your research experience at the General De Jesus College Library.",
+    title: "GJC Library: Team Researcher",
+    description:
+      "Enhance your research experience at the General De Jesus College Library.",
   },
   robots: {
     index: true,
@@ -47,11 +51,11 @@ export default function RootLayout({
           `${archivo.variable} ${libre_franklin.variable} ${oswald.variable}`
         )}
       >
-        <Suspense fallback={
-          <>
-            {/* null for now to allow smooth fidgetspinner loading */}
-          </>
-        }>
+        <Suspense
+          fallback={
+            <>{/* null for now to allow smooth fidgetspinner loading */}</>
+          }
+        >
           <AuthProvider>
             <Providers>
               <NextTopLoader color="#E09900" />

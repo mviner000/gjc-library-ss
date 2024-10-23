@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import React, { useState, useTransition } from "react";
 import Link from "next/link";
@@ -27,9 +27,10 @@ const LOGIN_URL = "/api/login";
 
 export const LoginForm = () => {
   const searchParams = useSearchParams();
-  const urlError = searchParams.get("error") === "OAuthAccountNotLinked"
-    ? "Sign in or register with another email provider"
-    : "";
+  const urlError =
+    searchParams.get("error") === "OAuthAccountNotLinked"
+      ? "Sign in or register with another email provider"
+      : "";
 
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | undefined>("");
@@ -71,14 +72,15 @@ export const LoginForm = () => {
     }
   };
 
-  const inputClass = "text-black bg-neutral-100 border-slate-300 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-300";
+  const inputClass =
+    "text-black bg-neutral-100 border-slate-300 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-300";
 
   return (
     <CardWrapper
       headerTitle="Team Researcher"
       headerLabel="This page is restricted"
       headerLabelColor="text-rose-400"
-      backButtonLabel="Don't have an account?"
+      backButtonLabel=""
       backButtonHref="/auth/register"
       showSocial
     >
@@ -157,7 +159,15 @@ export const LoginForm = () => {
               <FidgetSpinner />
             </div>
           ) : (
-            <Button disabled={loading || !form.getValues("username") || !form.getValues("password")} type="submit" className="w-full">
+            <Button
+              disabled={
+                loading ||
+                !form.getValues("username") ||
+                !form.getValues("password")
+              }
+              type="submit"
+              className="w-full"
+            >
               Log in
             </Button>
           )}

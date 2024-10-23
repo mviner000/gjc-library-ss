@@ -11,6 +11,7 @@ import {
   File,
   FileText,
   HelpCircle,
+  Home,
   Image,
   Laptop,
   LayoutDashboardIcon,
@@ -29,8 +30,8 @@ import {
   User,
   User2Icon,
   UserX2Icon,
-  X
-} from 'lucide-react';
+  X,
+} from "lucide-react";
 
 export type Icon = LucideIcon;
 
@@ -62,6 +63,7 @@ export const Icons = {
   moon: Moon,
   laptop: Laptop,
   bell: BellRing,
+  home: Home,
   gitHub: ({ ...props }: LucideProps) => (
     <svg
       aria-hidden="true"
@@ -80,5 +82,5 @@ export const Icons = {
     </svg>
   ),
   twitter: Twitter,
-  check: Check
+  check: Check,
 };

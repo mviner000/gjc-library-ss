@@ -17,7 +17,6 @@ import { Social } from "@/components/auth/social";
 import { Poppins } from "next/font/google";
 import Image from "next/image";
 
-
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["600"],
@@ -40,7 +39,7 @@ export const CardWrapper = ({
   backButtonLabel,
   backButtonHref,
   showSocial,
-  headerLabelColor
+  headerLabelColor,
 }: CardWrapperProps) => {
   return (
     <Card className="mt-12 mb-10 md:w-[425px] w-[360px] shadow-md border-8 border-cyan-900">
@@ -53,26 +52,23 @@ export const CardWrapper = ({
           alt="General De Jesus Logo"
         />
         <div className="static inline-block">
-          <div className="mt-10 ml-[-8px] text-3xl font-bold mb-2 text-center text-black dark:text-white">{headerTitle}</div>
+          <div className="mt-10 ml-[-8px] text-3xl font-bold mb-2 text-center text-black dark:text-white">
+            {headerTitle}
+          </div>
           <Separator className="absolute right-0 bg-cyan-800 h-[1px] w-full" />
         </div>
         <Header textColor={headerLabelColor} label={headerLabel} />
       </CardHeader>
-      <CardContent>
-        {children}
-      </CardContent>
+      <CardContent>{children}</CardContent>
       <Separator className="right-0 bg-cyan-800 h-[1px] mb-3" />
-      {showSocial && (
+      {/* {showSocial && (
         <CardFooter>
           <Social />
         </CardFooter>
-      )}
+      )} */}
 
       <CardFooter>
-        <BackButton
-          label={backButtonLabel}
-          href={backButtonHref}
-        />
+        <BackButton label={backButtonLabel} href={backButtonHref} />
       </CardFooter>
     </Card>
   );
