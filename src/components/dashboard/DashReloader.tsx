@@ -7,6 +7,7 @@ import { Tabs, TabsContent } from "@/components/ui/tabs";
 import BookTransactionsSkeletonLoader from "../card/LibraryCardDashboard/BookTransactionsSkeletonLoader";
 import InspirationalQuoteModal from "./InspirationalQuoteModal";
 import BookTransactionsTable from "../card/BookTransactionsTable";
+import MonthSelector from "./MonthSelector";
 
 // Dynamically import Lottie component with SSR disabled
 const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
@@ -96,8 +97,11 @@ export function DashReloader() {
           <Lottie animationData={confettiData} loop={true} />
         </div>
       )}
-      <div>
+      {/* <div>
         <p>Page will reload in {countdown} seconds.</p>
+      </div> */}
+      <div className="w-full text-center">
+        <MonthSelector />
       </div>
       <div className="mt-5">
         <div className="flex flex-col lg:flex-row gap-4">
