@@ -61,7 +61,18 @@ const useGridData = () => {
       return !!(
         cellData &&
         typeof cellData.value === "string" &&
-        cellData.value.includes("cleared")
+        cellData.value.includes("ADDITION")
+      );
+    },
+    []
+  );
+
+  const isClearanceCell = useCallback(
+    (cellData: CellData | undefined): boolean => {
+      return !!(
+        cellData &&
+        typeof cellData.value === "string" &&
+        cellData.value.includes("-cleared-")
       );
     },
     []
@@ -95,17 +106,20 @@ const useGridData = () => {
         "custom-column-class",
         Math.floor(cellIndex / 9) % 2 === 0 ? "" : "",
         isBorrowedCell(gridData[cellIndex])
-          ? "text-green-800 text-lg -mt-[14px] pb-[10px]"
+          ? "text-green-800 text-lg min-h-[25px] min-h-[50px]"
           : "",
         isExtendedCell(gridData[cellIndex])
-          ? "text-blue-800 text-lg -mt-[14px] pb-[10px]"
+          ? "text-blue-800 text-lg min-h-[25px] min-h-[50px]"
           : "",
         isClearedCell(gridData[cellIndex])
-          ? "text-purple-800 text-lg -mt-[14px] pb-[10px]"
+          ? "text-purple-800 text-lg min-h-[25px] min-h-[50px]"
           : "",
-        isAdditionCell(gridData[cellIndex]) ? "-mt-[12px] pb-[12px]" : "",
+        isAdditionCell(gridData[cellIndex]) ? "-mt-[14px]" : "",
+        isClearanceCell(gridData[cellIndex])
+          ? " min-h-[25px] -mt-[5px] pb-[15px]"
+          : "",
         isReturnedCell(gridData[cellIndex])
-          ? "text-red-800 text-lg -mt-[14px] pb-[10px] line-through"
+          ? "text-red-800 text-lg min-h-[50px] line-through"
           : ""
       );
     },
@@ -116,6 +130,7 @@ const useGridData = () => {
       isAdditionCell,
       isExtendedCell,
       isClearedCell,
+      isClearanceCell,
     ]
   );
 

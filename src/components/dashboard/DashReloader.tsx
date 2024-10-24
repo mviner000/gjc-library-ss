@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import React, { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
@@ -6,6 +6,7 @@ import PageContainer from "@/components/layout/page-container";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import BookTransactionsSkeletonLoader from "../card/LibraryCardDashboard/BookTransactionsSkeletonLoader";
 import InspirationalQuoteModal from "./InspirationalQuoteModal";
+import BookTransactionsTable from "../card/BookTransactionsTable";
 
 // Dynamically import Lottie component with SSR disabled
 const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
@@ -38,15 +39,19 @@ export function DashReloader() {
   const [selectedTab, setSelectedTab] = useState("pie-graph");
   const [showConfetti, setShowConfetti] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [confettiData, setConfettiData] = useState<LottieAnimationData | null>(null);
+  const [confettiData, setConfettiData] = useState<LottieAnimationData | null>(
+    null
+  );
 
   useEffect(() => {
     setShowConfetti(true);
-    
+
     // Load confetti data
-    import("./confetti.json").then((module: { default: LottieAnimationData }) => {
-      setConfettiData(module.default);
-    });
+    import("./confetti.json").then(
+      (module: { default: LottieAnimationData }) => {
+        setConfettiData(module.default);
+      }
+    );
 
     const intervalId = setInterval(() => {
       setCountdown((prevCountdown) => {
@@ -76,16 +81,32 @@ export function DashReloader() {
 
   return (
     <PageContainer scrollable={true}>
-      {showConfetti && confettiData && typeof window !== 'undefined' && (
-        <div style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "100%", zIndex: 9999, pointerEvents: "none" }}>
+      {showConfetti && confettiData && typeof window !== "undefined" && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            zIndex: 9999,
+            pointerEvents: "none",
+          }}
+        >
           <Lottie animationData={confettiData} loop={true} />
         </div>
       )}
       <div>
         <p>Page will reload in {countdown} seconds.</p>
       </div>
+      <div className="mt-5">
+        <div className="flex flex-col lg:flex-row gap-4">
+          <BookTransactionsTable />
+          <BookTransactionsTable />
+        </div>
+      </div>
       <div className="space-y-2">
-        <Tabs
+        {/* <Tabs
           value={selectedTab}
           onValueChange={handleTabChange}
           className="space-y-4"
@@ -97,9 +118,9 @@ export function DashReloader() {
               </div>
             </div>
           </TabsContent>
-        </Tabs>
+        </Tabs> */}
         {showModal && (
-          <InspirationalQuoteModal 
+          <InspirationalQuoteModal
             quote="Your time is limited, so don't waste it living someone else's life."
             author="Steve Jobs"
             buttonText="Let's do it"

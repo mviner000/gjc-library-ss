@@ -74,6 +74,8 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
       case "RETURNED":
       case "EXTENDED":
       case "CLEARED":
+      case "CLEARANCE":
+        return transactionData.status;
       case "ADDITION":
         return transactionData.status;
       default:

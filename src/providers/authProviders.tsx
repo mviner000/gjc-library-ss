@@ -11,7 +11,7 @@ import useSWR from "swr";
 import fetcher from "@/lib/fetcher";
 import { TOKEN_API_URL } from "@/constants";
 
-const LOGIN_REDIRECT_URL = "/home";
+const LOGIN_REDIRECT_URL = "/dashboard";
 const LOGOUT_REDIRECT_URL = "/login";
 const LOGIN_REQUIRED_URL = "/login";
 

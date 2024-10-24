@@ -128,18 +128,18 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
               ))}
             </SelectContent>
           </Select>
-          <div className="hidden">
+          <div className="">
             <Select
               value={transactionData.status}
               onValueChange={(value) =>
                 setTransactionData((prev) => ({ ...prev, status: value }))
               }
-              disabled
             >
               <SelectTrigger>
                 <SelectValue placeholder="Select Status" />
               </SelectTrigger>
               <SelectContent>
+                <SelectItem value="CLEARANCE">CLEARANCE</SelectItem>
                 <SelectItem value="BORROWED">BORROWED</SelectItem>
                 <SelectItem value="RETURNED">RETURNED</SelectItem>
                 <SelectItem value="EXTENDED">EXTENDED</SelectItem>

@@ -13,7 +13,6 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { CardCalendar } from "@/components/ui/library-card-calendar-picker";
@@ -52,8 +51,45 @@ interface MoveConfirmationDialogProps {
   };
 }
 
-const truncateText = (text: string, maxLength: number) => {
-  return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
+const HIDDEN_TEXTS = [
+  "CLEARED",
+  "BORROWED",
+  "RETURNED",
+  "ADDITION",
+  "EXTENDED",
+  "SUBTRACTION",
+];
+
+const shouldHideText = (text: string): boolean => {
+  if (!text) return false;
+  const upperText = text.trim().toUpperCase();
+  return HIDDEN_TEXTS.some((hiddenText) => {
+    const lines = upperText.split("\n");
+    return lines.some((line) => line.trim() === hiddenText);
+  });
+};
+
+const getDisplayText = (cellData: CellData): string => {
+  if (!cellData || !cellData.value) return "";
+
+  const lines = cellData.value.split("\n");
+  if (lines.length < 2) return cellData.value;
+
+  // If first line contains hidden text, return only the second line
+  if (shouldHideText(lines[0])) {
+    return lines.slice(1).join("\n");
+  }
+
+  return cellData.value;
+};
+
+const processDisplayText = (text: string, maxLength: number = 30): string => {
+  if (shouldHideText(text)) {
+    const lines = text.split("\n");
+    // Return the date part only if it exists
+    return lines.length > 1 ? lines[1] : "";
+  }
+  return text.length > maxLength ? `${text.slice(0, maxLength)}...` : text;
 };
 
 const findTransactionAndRecordByPlacingNumber = (
@@ -142,7 +178,8 @@ const Column: React.FC<ColumnProps> = ({
   const [moveDialogOpen, setMoveDialogOpen] = useState(false);
   const [moveDetails, setMoveDetails] = useState<any>(null);
   const { toast } = useToast();
-  const { bookTransactions } = useBookTransactionsContext();
+  const { bookTransactions, refreshBookTransactions } =
+    useBookTransactionsContext();
 
   const handleDragStart = (e: React.DragEvent, cellIndex: number) => {
     if (editingCell === cellIndex) return;
@@ -222,7 +259,7 @@ const Column: React.FC<ColumnProps> = ({
           value,
           record,
           recordDetails: {
-            value,
+            value: processDisplayText(value),
             recordType: record?.record_type,
             callNo: transaction?.callno,
             datetime: record?.datetime
@@ -253,12 +290,14 @@ const Column: React.FC<ColumnProps> = ({
       const { sourceIndex, targetIndex, value, record, recordDetails } =
         moveDetails;
 
-      // Call the backend to update the placing number
       await updatePlacingNumber(record.id, targetIndex);
 
-      // Update the UI
+      // Update the UI with processed text
       onDataChange(targetIndex, value);
-      onDataChange(sourceIndex, ""); // Clear the source cell
+      onDataChange(sourceIndex, "");
+
+      // Refresh the book transactions data
+      await refreshBookTransactions();
 
       toast({
         title: "Content Moved Successfully",
@@ -361,13 +400,13 @@ const Column: React.FC<ColumnProps> = ({
             cellData.value.trim() !== "" && editingCell !== cellIndex;
           const isEditing = editingCell === cellIndex;
 
-          const displayText = truncateText(cellData.value, 9);
+          const displayText = processDisplayText(getDisplayText(cellData));
 
           return (
             <div
               key={rowIndex}
               className={cn(
-                "font-bold font-sans relative flex items-center justify-center border-b border-black last:border-b-1 text-center min-h-[40px]",
+                "font-bold font-sans relative flex items-center justify-center border-b border-black last:border-b-1 text-center min-h-[50px]",
                 getCellClassName(cellIndex),
                 isDraggable ? "cursor-move" : "cursor-text",
                 "transition-colors duration-200"
