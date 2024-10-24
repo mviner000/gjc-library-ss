@@ -6,6 +6,16 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 import { CardCalendar } from "@/components/ui/library-card-calendar-picker";
 import { ToastAction } from "@/components/ui/toast";
 import { useToast } from "@/components/ui/use-toast";
@@ -23,6 +33,23 @@ interface ColumnProps {
   getCellClassName: (cellIndex: number) => string;
   className?: string;
   onDateSelect: (cellIndex: number, date: Date) => void;
+}
+
+interface MoveConfirmationDialogProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+  sourceIndex: number;
+  targetIndex: number;
+  recordDetails: {
+    value: string;
+    recordType?: string;
+    callNo?: string;
+    datetime?: string;
+    recordId?: number;
+    accessionNumber?: string;
+    bookTitle?: string;
+  };
 }
 
 const truncateText = (text: string, maxLength: number) => {
@@ -46,6 +73,56 @@ const findTransactionAndRecordByPlacingNumber = (
   return { transaction: null, record: null };
 };
 
+const MoveConfirmationDialog: React.FC<MoveConfirmationDialogProps> = ({
+  isOpen,
+  onClose,
+  onConfirm,
+  sourceIndex,
+  targetIndex,
+  recordDetails,
+}) => (
+  <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+    <DialogContent>
+      <DialogHeader>
+        <DialogTitle>Confirm Move Operation</DialogTitle>
+        <DialogDescription>
+          Are you sure you want to move this record?
+        </DialogDescription>
+      </DialogHeader>
+      <div className="space-y-2">
+        <p>
+          <strong>From Cell:</strong> {sourceIndex} → <strong>To Cell:</strong>{" "}
+          {targetIndex}
+        </p>
+        <p>
+          <strong>Status:</strong> {recordDetails.recordType || "N/A"}
+        </p>
+        <p>
+          <strong>Call Number:</strong> {recordDetails.callNo || "N/A"}
+        </p>
+        <p>
+          <strong>Date:</strong> {recordDetails.datetime || "N/A"}
+        </p>
+        <p>
+          <strong>Record ID:</strong> {recordDetails.recordId || "N/A"}
+        </p>
+        <p>
+          <strong>Accession:</strong> {recordDetails.accessionNumber || "N/A"}
+        </p>
+        <p>
+          <strong>Book Title:</strong> {recordDetails.bookTitle || "N/A"}
+        </p>
+      </div>
+      <DialogFooter>
+        <Button variant="outline" onClick={onClose}>
+          Cancel
+        </Button>
+        <Button onClick={onConfirm}>Confirm Move</Button>
+      </DialogFooter>
+    </DialogContent>
+  </Dialog>
+);
+
 const Column: React.FC<ColumnProps> = ({
   isLastColumn,
   startNumber,
@@ -62,6 +139,8 @@ const Column: React.FC<ColumnProps> = ({
   const [hoveredCell, setHoveredCell] = useState<number | null>(null);
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [editingCell, setEditingCell] = useState<number | null>(null);
+  const [moveDialogOpen, setMoveDialogOpen] = useState(false);
+  const [moveDetails, setMoveDetails] = useState<any>(null);
   const { toast } = useToast();
   const { bookTransactions } = useBookTransactionsContext();
 
@@ -81,87 +160,152 @@ const Column: React.FC<ColumnProps> = ({
         record: record,
       });
       e.dataTransfer.setData("application/json", dragData);
-      e.dataTransfer.effectAllowed = "copy";
+      e.dataTransfer.effectAllowed = "move";
       e.currentTarget.classList.add("opacity-50");
     }
   };
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
-    e.dataTransfer.dropEffect = "copy";
-    e.currentTarget.classList.add("bg-green-100");
+    e.dataTransfer.dropEffect = "move";
+    e.currentTarget.classList.add("bg-yellow-100");
   };
 
   const handleDragLeave = (e: React.DragEvent) => {
-    e.currentTarget.classList.remove("bg-green-100");
+    e.currentTarget.classList.remove("bg-yellow-100");
   };
 
   const handleDragEnd = (e: React.DragEvent) => {
     e.currentTarget.classList.remove("opacity-50");
   };
 
-  const handleDrop = (e: React.DragEvent, targetCellIndex: number) => {
+  const updatePlacingNumber = async (
+    recordId: number,
+    newPlacingNumber: number
+  ) => {
+    try {
+      const response = await fetch(`/api/update-bookrecord/${recordId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          placing_number: newPlacingNumber,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to update placing number");
+      }
+
+      return data;
+    } catch (error) {
+      console.error("Error updating placing number:", error);
+      throw error;
+    }
+  };
+
+  const handleDrop = async (e: React.DragEvent, targetCellIndex: number) => {
     e.preventDefault();
-    e.currentTarget.classList.remove("bg-green-100");
+    e.currentTarget.classList.remove("bg-yellow-100");
 
     try {
       const dragData = JSON.parse(e.dataTransfer.getData("application/json"));
       const { index: sourceIndex, value, transaction, record } = dragData;
 
       if (sourceIndex !== targetCellIndex) {
-        onDataChange(targetCellIndex, value);
-
-        toast({
-          title: "Content Copied Successfully",
-          description: (
-            <div className="mt-2 space-y-2">
-              <p>
-                <strong>From Cell:</strong> {sourceIndex} →{" "}
-                <strong>To Cell:</strong> {targetCellIndex}
-              </p>
-              <p>
-                <strong>Status:</strong> {record?.record_type}
-              </p>
-              <p>
-                <strong>Call Number:</strong> {transaction?.callno}
-              </p>
-              <p>
-                <strong>Date:</strong>{" "}
-                {record?.datetime
-                  ? new Date(record.datetime).toLocaleDateString()
-                  : "N/A"}
-              </p>
-              <p>
-                <strong>Record ID:</strong> {record?.id || "N/A"}
-              </p>
-              <p>
-                <strong>Accession:</strong>{" "}
-                {transaction?.accession_number || "N/A"}
-              </p>
-              <p>
-                <strong>Book Title:</strong> {transaction?.book_title || "N/A"}
-              </p>
-              <div className="mt-2 p-2 bg-slate-100 rounded">
-                <p className="text-sm text-slate-600">Full Content: {value}</p>
-              </div>
-            </div>
-          ),
-          duration: 5000,
-          action: (
-            <ToastAction altText="Close" onClick={() => {}}>
-              Dismiss
-            </ToastAction>
-          ),
+        setMoveDetails({
+          sourceIndex,
+          targetIndex: targetCellIndex,
+          value,
+          record,
+          recordDetails: {
+            value,
+            recordType: record?.record_type,
+            callNo: transaction?.callno,
+            datetime: record?.datetime
+              ? new Date(record.datetime).toLocaleDateString()
+              : undefined,
+            recordId: record?.id,
+            accessionNumber: transaction?.accession_number,
+            bookTitle: transaction?.book_title,
+          },
         });
+        setMoveDialogOpen(true);
       }
     } catch (error) {
       console.error("Drop error:", error);
       toast({
-        title: "Copy Failed",
-        description: "Failed to copy content between cells. Please try again.",
+        title: "Move Failed",
+        description: "Failed to move content between cells. Please try again.",
         variant: "destructive",
         duration: 3000,
       });
+    }
+  };
+
+  const handleMoveConfirm = async () => {
+    try {
+      if (!moveDetails) return;
+
+      const { sourceIndex, targetIndex, value, record, recordDetails } =
+        moveDetails;
+
+      // Call the backend to update the placing number
+      await updatePlacingNumber(record.id, targetIndex);
+
+      // Update the UI
+      onDataChange(targetIndex, value);
+      onDataChange(sourceIndex, ""); // Clear the source cell
+
+      toast({
+        title: "Content Moved Successfully",
+        description: (
+          <div className="mt-2 space-y-2">
+            <p>
+              <strong>From Cell:</strong> {sourceIndex} →{" "}
+              <strong>To Cell:</strong> {targetIndex}
+            </p>
+            <p>
+              <strong>Status:</strong> {recordDetails.recordType}
+            </p>
+            <p>
+              <strong>Call Number:</strong> {recordDetails.callNo}
+            </p>
+            <p>
+              <strong>Date:</strong> {recordDetails.datetime}
+            </p>
+            <p>
+              <strong>Record ID:</strong> {recordDetails.recordId}
+            </p>
+            <p>
+              <strong>Accession:</strong> {recordDetails.accessionNumber}
+            </p>
+            <p>
+              <strong>Book Title:</strong> {recordDetails.bookTitle}
+            </p>
+          </div>
+        ),
+        duration: 5000,
+        action: (
+          <ToastAction altText="Close" onClick={() => {}}>
+            Dismiss
+          </ToastAction>
+        ),
+      });
+    } catch (error) {
+      console.error("Move error:", error);
+      toast({
+        title: "Move Failed",
+        description: "Failed to update placing number. Please try again.",
+        variant: "destructive",
+        duration: 3000,
+      });
+    } finally {
+      setMoveDialogOpen(false);
+      setMoveDetails(null);
     }
   };
 
@@ -199,107 +343,125 @@ const Column: React.FC<ColumnProps> = ({
   };
 
   return (
-    <div
-      className={cn(
-        "flex flex-col",
-        isLastColumn ? "" : "border-r border-black",
-        className
-      )}
-    >
-      {[...Array(9)].map((_, rowIndex) => {
-        const cellIndex = Math.max(1, startNumber + rowIndex);
-        const cellData = gridData[cellIndex] || {
-          value: "",
-          isLineThrough: false,
-        };
-        const isDraggable =
-          cellData.value.trim() !== "" && editingCell !== cellIndex;
-        const isEditing = editingCell === cellIndex;
+    <>
+      <div
+        className={cn(
+          "flex flex-col",
+          isLastColumn ? "" : "border-r border-black",
+          className
+        )}
+      >
+        {[...Array(9)].map((_, rowIndex) => {
+          const cellIndex = Math.max(1, startNumber + rowIndex);
+          const cellData = gridData[cellIndex] || {
+            value: "",
+            isLineThrough: false,
+          };
+          const isDraggable =
+            cellData.value.trim() !== "" && editingCell !== cellIndex;
+          const isEditing = editingCell === cellIndex;
 
-        const displayText = truncateText(cellData.value, 9);
+          const displayText = truncateText(cellData.value, 9);
 
-        return (
-          <div
-            key={rowIndex}
-            className={cn(
-              "font-bold font-sans relative flex items-center justify-center border-b border-black last:border-b-1 text-center min-h-[40px]",
-              getCellClassName(cellIndex),
-              isDraggable ? "cursor-move" : "cursor-text",
-              "transition-colors duration-200"
-            )}
-            onMouseEnter={() => setHoveredCell(cellIndex)}
-            onMouseLeave={() => setHoveredCell(null)}
-            draggable={isDraggable}
-            onDragStart={(e) => handleDragStart(e, cellIndex)}
-            onDragEnd={handleDragEnd}
-            onDragOver={handleDragOver}
-            onDragLeave={handleDragLeave}
-            onDrop={(e) => handleDrop(e, cellIndex)}
-            onDoubleClick={() => onLineThroughToggle(cellIndex)}
-            onClick={() => handleCellClick(cellIndex)}
-          >
-            {hoveredCell === cellIndex && !isDraggable && (
-              <button
-                className="absolute left-0 top-0 p-1 hover:opacity-80"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleClearClick();
-                }}
-              >
-                ✅
-              </button>
-            )}
+          return (
+            <div
+              key={rowIndex}
+              className={cn(
+                "font-bold font-sans relative flex items-center justify-center border-b border-black last:border-b-1 text-center min-h-[40px]",
+                getCellClassName(cellIndex),
+                isDraggable ? "cursor-move" : "cursor-text",
+                "transition-colors duration-200"
+              )}
+              onMouseEnter={() => setHoveredCell(cellIndex)}
+              onMouseLeave={() => setHoveredCell(null)}
+              draggable={isDraggable}
+              onDragStart={(e) => handleDragStart(e, cellIndex)}
+              onDragEnd={handleDragEnd}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={(e) => handleDrop(e, cellIndex)}
+              onDoubleClick={() => onLineThroughToggle(cellIndex)}
+              onClick={() => handleCellClick(cellIndex)}
+            >
+              {hoveredCell === cellIndex && !isDraggable && (
+                <button
+                  className="absolute left-0 top-0 p-1 hover:opacity-80"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleClearClick();
+                  }}
+                >
+                  ✅
+                </button>
+              )}
 
-            {isEditing ? (
-              <textarea
-                className="w-full h-[39px] bg-transparent text-center resize-none outline-none focus:outline-dashed focus:outline-green-500 pb-1 overflow-y-auto"
-                value={cellData.value}
-                onChange={(e) => onDataChange(cellIndex, e.target.value)}
-                onBlur={handleBlur}
-                autoFocus
-              />
-            ) : (
-              <div
-                className={cn(
-                  "w-full pt-[15px] select-none",
-                  cellData.isLineThrough && "line-through",
-                  isDraggable &&
-                    "rounded px-2 shadow-sm hover:shadow-md transition-shadow duration-200"
+              {isEditing ? (
+                <textarea
+                  className="w-full h-[39px] bg-transparent text-center resize-none outline-none focus:outline-dashed focus:outline-green-500 pb-1 overflow-y-auto"
+                  value={cellData.value}
+                  onChange={(e) => onDataChange(cellIndex, e.target.value)}
+                  onBlur={handleBlur}
+                  autoFocus
+                />
+              ) : (
+                <div
+                  className={cn(
+                    "w-full pt-[15px] select-none",
+                    cellData.isLineThrough && "line-through",
+                    isDraggable &&
+                      "rounded px-2 shadow-sm hover:shadow-md transition-shadow duration-200"
+                  )}
+                  title={cellData.value}
+                >
+                  {displayText}
+                </div>
+              )}
+
+              {hoveredCell === cellIndex &&
+                !isDraggable &&
+                mode === "editor" && (
+                  <Popover open={calendarOpen} onOpenChange={handleOpenChange}>
+                    <PopoverTrigger asChild>
+                      <button
+                        className="absolute right-0 top-0 p-1 hover:opacity-80"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setCalendarOpen(true);
+                        }}
+                      >
+                        📅
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="end">
+                      <CardCalendar
+                        selected={undefined}
+                        onSelect={handleDateSelect(cellIndex)}
+                        initialFocus
+                        isOpen={calendarOpen}
+                        onClose={handleClose}
+                      />
+                    </PopoverContent>
+                  </Popover>
                 )}
-                title={cellData.value}
-              >
-                {displayText}
-              </div>
-            )}
+            </div>
+          );
+        })}
+      </div>
 
-            {hoveredCell === cellIndex && !isDraggable && mode === "editor" && (
-              <Popover open={calendarOpen} onOpenChange={handleOpenChange}>
-                <PopoverTrigger asChild>
-                  <button
-                    className="absolute right-0 top-0 p-1 hover:opacity-80"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setCalendarOpen(true);
-                    }}
-                  >
-                    📅
-                  </button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="end">
-                  <CardCalendar
-                    selected={undefined}
-                    onSelect={handleDateSelect(cellIndex)}
-                    initialFocus
-                    isOpen={calendarOpen}
-                    onClose={handleClose}
-                  />
-                </PopoverContent>
-              </Popover>
-            )}
-          </div>
-        );
-      })}
-    </div>
+      {moveDetails && (
+        <MoveConfirmationDialog
+          isOpen={moveDialogOpen}
+          onClose={() => {
+            setMoveDialogOpen(false);
+            setMoveDetails(null);
+          }}
+          onConfirm={handleMoveConfirm}
+          sourceIndex={moveDetails.sourceIndex}
+          targetIndex={moveDetails.targetIndex}
+          recordDetails={moveDetails.recordDetails}
+        />
+      )}
+    </>
   );
 };
 

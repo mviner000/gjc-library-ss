@@ -39,7 +39,7 @@ export const formatGridData = (record: BookRecord): string => {
     case "RETURNED":
       return `${record.record_type}\n${formatDate(record.datetime)}`;
     case "ADDITION":
-      return `\ncleared`;
+      return `\nclearedd`;
     case "EXTENDED":
       return `${record.record_type}\n${formatDate(record.datetime)}`;
     case "CLEARED":
