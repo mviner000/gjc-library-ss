@@ -23,6 +23,7 @@ import {
   MoreVertical,
   Pizza,
   Plus,
+  Rabbit,
   Settings,
   SunMedium,
   Trash,
@@ -64,6 +65,7 @@ export const Icons = {
   laptop: Laptop,
   bell: BellRing,
   home: Home,
+  rabbit: Rabbit,
   gitHub: ({ ...props }: LucideProps) => (
     <svg
       aria-hidden="true"

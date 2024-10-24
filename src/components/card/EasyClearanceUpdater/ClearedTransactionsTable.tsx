@@ -72,22 +72,6 @@ export function ClearedTransactionsTable() {
       enableSorting: false,
       enableHiding: false,
     },
-    // {
-    //   accessorKey: "callno",
-    //   header: "Call Number",
-    //   cell: ({ row }) => <div>{row.getValue("callno") || "N/A"}</div>,
-    // },
-    // {
-    //   accessorKey: "accession_number",
-    //   header: "Accession Number",
-    //   cell: ({ row }) => <div>{row.getValue("accession_number") || "N/A"}</div>,
-    // },
-
-    // {
-    //   accessorKey: "book_title",
-    //   header: "Purpose",
-    //   cell: ({ row }) => <div>{row.getValue("book_title")}</div>,
-    // },
     {
       accessorKey: "account_school_id",
       header: "Student ID",
@@ -100,13 +84,6 @@ export function ClearedTransactionsTable() {
         </Link>
       ),
     },
-    // {
-    //   accessorKey: "status",
-    //   header: "Status",
-    //   cell: ({ row }) => (
-    //     <div className="capitalize">{row.getValue("status")}</div>
-    //   ),
-    // },
     {
       accessorKey: "view",
       header: "",
@@ -219,32 +196,6 @@ export function ClearedTransactionsTable() {
             }
             className="max-w-sm"
           />
-          {/* <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="ml-auto">
-                Columns <ChevronDown className="ml-2 h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              {table
-                .getAllColumns()
-                .filter((column) => column.getCanHide())
-                .map((column) => {
-                  return (
-                    <DropdownMenuCheckboxItem
-                      key={column.id}
-                      className="capitalize"
-                      checked={column.getIsVisible()}
-                      onCheckedChange={(value) =>
-                        column.toggleVisibility(!!value)
-                      }
-                    >
-                      {column.id}
-                    </DropdownMenuCheckboxItem>
-                  );
-                })}
-            </DropdownMenuContent>
-          </DropdownMenu> */}
         </div>
         <div className="rounded-md border">
           <Table>

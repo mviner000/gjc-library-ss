@@ -124,6 +124,12 @@ export const navItems: NavItem[] = [
     label: "Dashboard",
   },
   {
+    title: "Madaling Buhay",
+    href: "/dashboard/madalingbuhay",
+    icon: "rabbit",
+    label: "Madaling Buhay",
+  },
+  {
     title: "Students",
     href: "/dashboard/students",
     icon: "user",

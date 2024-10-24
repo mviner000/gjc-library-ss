@@ -2,7 +2,9 @@ import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import getCurrentUser from "@/utils/getCurrentUser";
 import { redirect } from "next/navigation";
-import TabularAccountsByCourse from "../../_components/TabularAccountsByCourse";
+import AccountsByCourse from "../../_components/AccountsByCourse";
+import MonthSelector from "@/components/dashboard/MonthSelector";
+import { Button } from "@/components/ui/button";
 
 interface PageProps {
   params: {
@@ -59,10 +61,20 @@ export default async function Page({ params }: PageProps) {
     ) || normalizedCourseShortName;
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Accounts for: </h1>
+    <div className="-mt-10 mx-auto p-4">
+      <div className="w-full text-center mb-10">
+        <MonthSelector />
+        <Button
+          className="mt-5 w-auto text-lg font-black"
+          variant="emerald"
+          size="lg"
+        >
+          Lagay na clearance. Boom!
+        </Button>
+      </div>
+      {/* <h1 className="text-2xl font-bold mb-4">Accounts for: </h1> */}
       <Suspense fallback={<div>Loading...</div>}>
-        <TabularAccountsByCourse courseShortName={normalizedCourseShortName} />
+        <AccountsByCourse courseShortName={normalizedCourseShortName} />
       </Suspense>
     </div>
   );

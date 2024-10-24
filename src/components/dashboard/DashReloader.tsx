@@ -107,8 +107,14 @@ export function DashReloader() {
       </div>
       <div className="mt-5">
         <div className="flex flex-col lg:flex-row gap-4">
-          <ClearedTransactionsTable />
-          <UnclearedTransactionsTable />
+          <div className="text-center w-full mt-32">
+            <h1 className="text-7xl font-bold text-orange-500">
+              WAG NA MUNA TO
+            </h1>
+            <h1>punta ka sa madaling buhay</h1>
+          </div>
+          {/* <ClearedTransactionsTable />
+          <UnclearedTransactionsTable /> */}
         </div>
       </div>
       <div className="space-y-2">
