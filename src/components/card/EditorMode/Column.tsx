@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { CellData } from "@/types";
+import { CellData, BookTransaction, BookRecord } from "@/types";
 import { cn } from "@/lib/utils";
 import {
   Popover,
@@ -9,6 +9,7 @@ import {
 import { CardCalendar } from "@/components/ui/library-card-calendar-picker";
 import { ToastAction } from "@/components/ui/toast";
 import { useToast } from "@/components/ui/use-toast";
+import { useBookTransactionsContext } from "@/app/student/_hooks/useBookTransactions";
 
 interface ColumnProps {
   isLastColumn: boolean;
@@ -28,6 +29,23 @@ const truncateText = (text: string, maxLength: number) => {
   return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
 };
 
+const findTransactionAndRecordByPlacingNumber = (
+  bookTransactions: BookTransaction[] | null,
+  placingNumber: number
+): { transaction: BookTransaction | null; record: BookRecord | null } => {
+  if (!bookTransactions) return { transaction: null, record: null };
+
+  for (const transaction of bookTransactions) {
+    const record = transaction.records.find(
+      (r) => r.placing_number === placingNumber
+    );
+    if (record) {
+      return { transaction, record };
+    }
+  }
+  return { transaction: null, record: null };
+};
+
 const Column: React.FC<ColumnProps> = ({
   isLastColumn,
   startNumber,
@@ -45,14 +63,22 @@ const Column: React.FC<ColumnProps> = ({
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [editingCell, setEditingCell] = useState<number | null>(null);
   const { toast } = useToast();
+  const { bookTransactions } = useBookTransactionsContext();
 
   const handleDragStart = (e: React.DragEvent, cellIndex: number) => {
-    if (editingCell === cellIndex) return; // Prevent drag while editing
+    if (editingCell === cellIndex) return;
     const cellData = gridData[cellIndex];
     if (cellData && cellData.value) {
+      const { transaction, record } = findTransactionAndRecordByPlacingNumber(
+        bookTransactions,
+        cellIndex
+      );
+
       const dragData = JSON.stringify({
         index: cellIndex,
         value: cellData.value,
+        transaction: transaction,
+        record: record,
       });
       e.dataTransfer.setData("application/json", dragData);
       e.dataTransfer.effectAllowed = "copy";
@@ -80,22 +106,61 @@ const Column: React.FC<ColumnProps> = ({
 
     try {
       const dragData = JSON.parse(e.dataTransfer.getData("application/json"));
-      const { index: sourceIndex, value } = dragData;
+      const { index: sourceIndex, value, transaction, record } = dragData;
 
       if (sourceIndex !== targetCellIndex) {
         onDataChange(targetCellIndex, value);
+
         toast({
-          title: "Content Copied",
-          description: `Copied from cell ${sourceIndex} to cell ${targetCellIndex}`,
-          duration: 2000,
+          title: "Content Copied Successfully",
+          description: (
+            <div className="mt-2 space-y-2">
+              <p>
+                <strong>From Cell:</strong> {sourceIndex} →{" "}
+                <strong>To Cell:</strong> {targetCellIndex}
+              </p>
+              <p>
+                <strong>Status:</strong> {record?.record_type}
+              </p>
+              <p>
+                <strong>Call Number:</strong> {transaction?.callno}
+              </p>
+              <p>
+                <strong>Date:</strong>{" "}
+                {record?.datetime
+                  ? new Date(record.datetime).toLocaleDateString()
+                  : "N/A"}
+              </p>
+              <p>
+                <strong>Record ID:</strong> {record?.id || "N/A"}
+              </p>
+              <p>
+                <strong>Accession:</strong>{" "}
+                {transaction?.accession_number || "N/A"}
+              </p>
+              <p>
+                <strong>Book Title:</strong> {transaction?.book_title || "N/A"}
+              </p>
+              <div className="mt-2 p-2 bg-slate-100 rounded">
+                <p className="text-sm text-slate-600">Full Content: {value}</p>
+              </div>
+            </div>
+          ),
+          duration: 5000,
+          action: (
+            <ToastAction altText="Close" onClick={() => {}}>
+              Dismiss
+            </ToastAction>
+          ),
         });
       }
     } catch (error) {
       console.error("Drop error:", error);
       toast({
         title: "Copy Failed",
-        description: "Failed to copy content between cells",
-        duration: 2000,
+        description: "Failed to copy content between cells. Please try again.",
+        variant: "destructive",
+        duration: 3000,
       });
     }
   };
@@ -151,15 +216,7 @@ const Column: React.FC<ColumnProps> = ({
           cellData.value.trim() !== "" && editingCell !== cellIndex;
         const isEditing = editingCell === cellIndex;
 
-        const displayText = truncateText(
-          cellData.value
-            .replace(/BORROWED/g, "")
-            .replace(/ADDITION/g, "")
-            .replace(/EXTENDED/g, "")
-            .replace(/RETURNED/g, "")
-            .replace(/CLEARED/g, ""),
-          17
-        );
+        const displayText = truncateText(cellData.value, 9);
 
         return (
           <div
