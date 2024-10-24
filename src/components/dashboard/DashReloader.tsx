@@ -8,6 +8,8 @@ import BookTransactionsSkeletonLoader from "../card/LibraryCardDashboard/BookTra
 import InspirationalQuoteModal from "./InspirationalQuoteModal";
 import BookTransactionsTable from "../card/BookTransactionsTable";
 import MonthSelector from "./MonthSelector";
+import ClearedTransactionsTable from "@/components/card/EasyClearanceUpdater/ClearedTransactionsTable";
+import UnclearedTransactionsTable from "../card/EasyClearanceUpdater/UnclearedTransactionsTable";
 
 // Dynamically import Lottie component with SSR disabled
 const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
@@ -105,8 +107,8 @@ export function DashReloader() {
       </div>
       <div className="mt-5">
         <div className="flex flex-col lg:flex-row gap-4">
-          <BookTransactionsTable />
-          <BookTransactionsTable />
+          <ClearedTransactionsTable />
+          <UnclearedTransactionsTable />
         </div>
       </div>
       <div className="space-y-2">
