@@ -5,7 +5,7 @@ import { Footer } from "./Footer";
 import { Hero } from "./Hero";
 import { Navbar } from "./Navbar";
 
-const HomePage: FC = () => {
+const MavsHomePage: FC = () => {
   return (
     <div className="relative min-h-screen">
       {/* Background Image */}
@@ -25,11 +25,11 @@ const HomePage: FC = () => {
       <div className="relative z-10">
         {/* <Navbar /> */}
         <Hero />
-        <ContactForm />
-        <Footer />
+        {/* <ContactForm />
+        <Footer /> */}
       </div>
     </div>
   );
 };
 
-export default HomePage;
+export default MavsHomePage;

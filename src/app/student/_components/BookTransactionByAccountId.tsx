@@ -166,7 +166,11 @@ export const BookTransactionByAccountId = () => {
                   </p>
                   <div className="space-y-1">
                     {transaction.records
-                      .filter((record) => record.record_type !== "ADDITION")
+                      .filter(
+                        (record) =>
+                          record.record_type !== "ADDITION" &&
+                          record.record_type !== "CLEARANCE"
+                      )
                       .sort(
                         (a, b) =>
                           new Date(b.datetime).getTime() -
@@ -179,6 +183,7 @@ export const BookTransactionByAccountId = () => {
                         >
                           <span>{record.record_type}</span>
                           {record.record_type !== "ADDITION" &&
+                            record.record_type !== "CLEARANCE" &&
                             record.record_type !== null && (
                               <span>{formatDate(record.datetime)}</span>
                             )}

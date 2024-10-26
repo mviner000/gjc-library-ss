@@ -1,23 +1,69 @@
+"use client";
+
 import Link from "next/link";
+import { useState } from "react";
 
 export const Hero: React.FC = () => {
+  const [isHovered, setIsHovered] = useState(false);
+  const [isDocsHovered, setIsDocsHovered] = useState(false);
   return (
-    <section className="h-screen flex w-full flex-col justify-center gap-8 bg-[url(/images/library.jpg)] bg-cover bg-top text-white">
+    <section className="h-screen flex w-full flex-col justify-center gap-7 bg-[url(/mavs/back.jpg)] bg-cover bg-top text-white">
       <div className="text-center">
-        <h1 className="text-5xl font-medium italic mb-2 -mt-16">Welcome to</h1>
-        <h2 className="text-7xl font-bold mb-8">GJC LIBRARY</h2>
-        <div className="flex flex-col justify-center items-center gap-5 mx-10">
+        <h2 className="text-yellow-500 text-6xl font-bold mb-8">
+          Welcome To GJC
+        </h2>
+        <h2 className="text-yellow-500  text-6xl font-bold mb-8">
+          We achieve great heights
+        </h2>
+        <div className="flex flex-row justify-center items-center gap-5 mx-10">
           <Link
             href="/browse"
-            className="w-32 inline-block px-6 py-3 text-lg font-medium bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            style={{
+              height: "50px",
+              width: "150px",
+              fontSize: "18px",
+              fontWeight: 600,
+              color: "rgb(255, 179, 0)",
+              backgroundColor: isHovered ? "#cc0000" : "green", // Changes to blue on hover
+              border: "1px solid rgb(255, 179, 0)",
+              borderRadius: "25px",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              fontFamily: "Helvetica, Arial, sans-serif",
+              outline: "none",
+              transition: "0.4s",
+            }}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
           >
-            Browse
+            More about us
           </Link>
+
           <Link
-            href="/team"
-            className="w-64 inline-block px-6 py-3 text-lg font-medium bg-green-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            href="https://docs.gjclibrary.com/"
+            style={{
+              height: "50px",
+              width: "150px",
+              fontSize: "18px",
+              fontWeight: 600,
+              color: "rgb(255, 179, 0)",
+              backgroundColor: isDocsHovered ? "#cc0000" : "green", // Changes to blue on hover
+              border: "1px solid rgb(255, 179, 0)",
+              borderRadius: "25px",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              fontFamily: "Helvetica, Arial, sans-serif",
+              outline: "none",
+              transition: "0.4s",
+            }}
+            onMouseEnter={() => setIsDocsHovered(true)}
+            onMouseLeave={() => setIsDocsHovered(false)}
           >
-            Proudly Present - Our Team
+            Docs
           </Link>
         </div>
       </div>
