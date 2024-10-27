@@ -9,17 +9,17 @@ const MavsHomePage: FC = () => {
   return (
     <div className="relative min-h-screen">
       {/* Background Image */}
-      <div className="fixed inset-0 -z-10">
+      {/* <div className="fixed inset-0 -z-10">
         <Image
           src="/mavs/library.png"
           alt="Library Background"
           fill
           className="object-cover object-center"
           priority
-        />
+        /> */}
         {/* Semi-transparent overlay */}
         {/* <div className="absolute inset-0 bg-gray-900 bg-opacity-30" /> */}
-      </div>
+      {/* </div> */}
 
       {/* Content */}
       <div className="relative z-10">

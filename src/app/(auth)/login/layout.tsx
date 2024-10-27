@@ -2,6 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import localFont from "next/font/local";
+import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
 
 const myFont = localFont({ src: "./../../fonts/MonotypeOldEnglish.woff2" });
@@ -42,6 +43,17 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <div className="mt-7 h-full">
+       <div className="fixed inset-0 -z-10">
+        <Image
+          src="/mavs/back.jpg"
+          alt="GJC Background"
+          fill
+          className="object-cover object-center"
+          priority
+        />
+        {/* Semi-transparent overlay */}
+        <div className="absolute inset-0 bg-gray-900 bg-opacity-50" />
+      </div>
       <div className="flex align-middle text-center text-black dark:text-white items-center justify-center">
         {/* <div className={cn(
           "xxs:text-3xl xs:text-4xl sm:text-4xl md:text-5xl lg:text-6xl",

@@ -72,12 +72,16 @@ export const LoginForm = () => {
     }
   };
 
-  const inputClass =
-    "text-black bg-neutral-100 border-slate-300 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-300";
+  // const inputClass =
+  //   "text-black bg-neutral-100 border-slate-300 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-300";
+
+    const inputClass =
+    "text-black bg-neutral-100 border-slate-300 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-300 rounded-full text-center";
 
   return (
     <CardWrapper
-      headerTitle="Team Researcher"
+      headerTitle="General De Jesus"
+      headerTitle2="College Library"
       headerLabel="This page is restricted"
       headerLabelColor="text-rose-400"
       backButtonLabel=""
@@ -131,7 +135,7 @@ export const LoginForm = () => {
             <Button
               variant="link"
               size="sm"
-              className="h-4 px-0 font-normal text-sm"
+              className="h-4 px-0 font-normal text-sm dark:text-slate-200"
               asChild
             >
               <Link href="/auth/reset">Forgot password?</Link>
@@ -147,7 +151,7 @@ export const LoginForm = () => {
               />
               <label
                 htmlFor="togglepwd"
-                className="text-gray-400 ml-1 text-xs font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                className="text-slate-200 ml-1 text-xs font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
               >
                 Show password
               </label>

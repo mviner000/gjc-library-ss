@@ -28,11 +28,11 @@ export function HeaderActions({ user }: Props) {
     <div className="flex items-center gap-4">
       {user ? (
         <>
-          {user.is_staff && isLocked ? (
+          {/* {user.is_staff && isLocked ? (
             <PincodeModal setIsLocked={setIsLocked} />
-          ) : (
+          ) : ( */}
             <ProfileDropdown user={user} />
-          )}
+          {/* )} */}
         </>
       ) : (
         // <Button asChild variant="secondary" size="sm">
